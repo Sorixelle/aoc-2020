@@ -1,0 +1,12 @@
+#+TITLE: Advent of Code 2020
+
+These are my solutions to Advent of Code 2020. Don't expect the code to be any
+good - I'm using this as an opportunity to learn Haskell.
+
+* Building
+  If you want to try these solutions for yourself (for some reason), you can
+  use Nix to build binaries for all the challenges using `nix-build`.
+
+* License
+  All code here is licensed under the Unlicense - do whatever you want with this
+  code.
