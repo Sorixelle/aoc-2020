@@ -3,11 +3,10 @@ import System.Environment
 
 data Policy = Policy
   { character :: Char
-  , min :: Int
-  , max :: Int
+  , num1 :: Int
+  , num2 :: Int
   , password :: String
   }
-  deriving Show
 
 digit :: ReadP Char
 digit = satisfy (\c -> c >= '0' && c <= '9')
@@ -44,14 +43,22 @@ validatePolicy (Policy c min max pwd) =
   where
     n = length $ filter (c ==) pwd
 
-numValidPolicies :: [Policy] -> Int
-numValidPolicies ps = length $ filter validatePolicy ps
+validatePolicy' :: Policy -> Bool
+validatePolicy' (Policy c pos1 pos2 pwd) =
+  (char1 == c) /= (char2 == c)
+  where
+    char1 = pwd !! (pos1 - 1)
+    char2 = pwd !! (pos2 - 1)
+
+numValidPolicies :: (Policy -> Bool) -> [Policy] -> Int
+numValidPolicies f ps = length $ filter f ps
 
 run :: String -> IO ()
 run fileName = do
   contents <- readFile fileName
   let policies = parsePolicy <$> lines contents
-  putStrLn $ "Number of valid policies: " ++ show (numValidPolicies policies)
+  putStrLn $ "Number of valid policies (Part 1): " ++ show (numValidPolicies validatePolicy policies)
+  putStrLn $ "Number of valid policies (Part 2): " ++ show (numValidPolicies validatePolicy' policies)
 
 main :: IO ()
 main = do
