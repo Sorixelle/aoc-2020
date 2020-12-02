@@ -11,7 +11,8 @@ pkgs.stdenv.mkDerivation {
   buildPhase = ''
     cd $src
     mkdir -p $out/tmp
-    ghc -o $out/01ReportRepair -outputdir $out/tmp 01ReportRepair
+    ghc -o $out/01ReportRepair -outputdir $out/tmp/1 01ReportRepair
+    ghc -o $out/02PasswordPhilosophy -outputdir $out/tmp/2 02PasswordPhilosophy
   '';
 
   installPhase = ''
