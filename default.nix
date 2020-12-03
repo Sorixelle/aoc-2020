@@ -13,6 +13,7 @@ pkgs.stdenv.mkDerivation {
     mkdir -p $out/tmp
     ghc -o $out/01ReportRepair -outputdir $out/tmp/1 01ReportRepair
     ghc -o $out/02PasswordPhilosophy -outputdir $out/tmp/2 02PasswordPhilosophy
+    ghc -o $out/03TobogganTrajectory -outputdir $out/tmp/3 03TobogganTrajectory
   '';
 
   installPhase = ''
