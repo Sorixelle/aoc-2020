@@ -14,6 +14,7 @@ pkgs.stdenv.mkDerivation {
     ghc -o $out/01ReportRepair -outputdir $out/tmp/1 01ReportRepair
     ghc -o $out/02PasswordPhilosophy -outputdir $out/tmp/2 02PasswordPhilosophy
     ghc -o $out/03TobogganTrajectory -outputdir $out/tmp/3 03TobogganTrajectory
+    ghc -o $out/04PassportProcessing -outputdir $out/tmp/4 04PassportProcessing
   '';
 
   installPhase = ''
