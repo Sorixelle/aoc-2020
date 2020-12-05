@@ -1,3 +1,4 @@
+import Data.List
 import System.Environment
 
 binarySearch :: (Char, Char) -> (Double, Double) -> String -> Int
@@ -24,12 +25,19 @@ seatSpecToID spec = findRow rowSpec * 8 + findCol colSpec
   where
     (rowSpec, colSpec) = splitAt 7 spec
 
+findMySeatID :: [Int] -> Int
+findMySeatID (c:n:xs)
+  | c + 1 /= n = c + 1
+  | otherwise  = findMySeatID $ n:xs
+findMySeatID _ = 0
+
 run :: String -> IO ()
 run fileName = do
   contents <- readFile fileName
-  let specs = lines contents
-  let highestID = foldr max 0 $ seatSpecToID <$> specs
+  let seatIDs = seatSpecToID <$> lines contents
+  let highestID = foldr max 0 seatIDs
   putStrLn $ "Highest seat ID (Part 1): " ++ (show highestID)
+  putStrLn $ "My seat ID (Part 2): " ++ (show $ findMySeatID $ sort seatIDs)
 
 main :: IO ()
 main = do
