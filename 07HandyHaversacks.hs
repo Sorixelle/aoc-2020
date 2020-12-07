@@ -1,5 +1,6 @@
 import Data.Either
 import Data.List
+import Data.Maybe
 import System.Environment
 import Text.Parsec
 
@@ -49,12 +50,20 @@ searchBag rules colour = searchBag' rules [colour]
       where
         newSpace = nub $ colours >>= (\c -> containsBag c rules)
 
+amountOfBagsIn :: [(String, [(Int, String)])] -> String -> Int
+amountOfBagsIn rules colour = sum $ f <$> (fromJust $ lookup colour rules)
+  where
+    f :: (Int, String) -> Int
+    f (num, c) = (num * (amountOfBagsIn rules c)) + num
+
 run :: String -> IO ()
 run fileName = do
   contents <- readFile fileName
   let rules = fromRight ("",[]) . parse bagRule "" <$> lines contents
   let numOfP1ValidBags = length $ searchBag rules "shiny gold"
   putStrLn $ "Number of bags that can contain a shiny gold bag (Part 1): " ++ (show numOfP1ValidBags)
+  let numOfBagsInShinyGold = amountOfBagsIn rules "shiny gold"
+  putStrLn $ "Number of bags inside a shiny gold bag (Part 2): " ++ (show numOfBagsInShinyGold)
 
 main :: IO ()
 main = do
