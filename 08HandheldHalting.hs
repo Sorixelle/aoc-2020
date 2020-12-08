@@ -8,25 +8,59 @@ parseInstruction line = (opcode, num)
       '+':n -> read n
       '-':n -> read $ head num'
 
-runProgTillInfLoop :: [(String, Int)] -> Int
-runProgTillInfLoop program = loop [] 0 0
+runProg :: [(String, Int)] -> (String, Int)
+runProg program = loop [] 0 0
+  where
+    loop :: [Int] -> Int -> Int -> (String, Int)
+    loop visited idx acc
+      | idx `elem` visited   = ("fail", acc)
+      | idx >= length program = ("end", acc)
+      | otherwise            = case opcode of
+                                 "acc"  -> loop visited' (idx + 1) (acc + val)
+                                 "jmp"  -> loop visited' (idx + val) acc
+                                 "nop"  -> loop visited' (idx + 1) acc
+                                 "fail" -> ("fail", acc)
+        where
+          (opcode, val)
+            | idx > (length program) - 1 = ("fail", 0)
+            | otherwise                  = program !! idx
+          visited' = idx:visited
+
+findInstCausingLoop :: [(String, Int)] -> Int
+findInstCausingLoop program = loop [] 0 0
   where
     loop :: [Int] -> Int -> Int -> Int
-    loop visited idx acc
-      | idx `elem` visited = acc
+    loop visited distance idx
+      | idx `elem` visited = case fst $ patchedResult (visited !! distance) of
+                               "fail" -> loop visited (distance + 1) idx
+                               "end"  -> visited !! distance
       | otherwise          = case opcode of
-                               "acc" -> loop visited' (idx + 1) (acc + val)
-                               "jmp" -> loop visited' (idx + val) acc
-                               "nop" -> loop visited' (idx + 1) acc
-        where
-          (opcode, val) = program !! idx
-          visited' = idx:visited
+                               "jmp" -> loop visited' distance (idx + val)
+                               _     -> loop visited' distance (idx + 1)
+      where
+        (opcode, val)
+          | idx > (length program) - 1 = ("fail", 0)
+          | otherwise                  = program !! idx
+        visited' = idx:visited
+        patchedResult i = runProg $ patchProgram program i
+
+
+patchProgram :: [(String, Int)] -> Int -> [(String, Int)]
+patchProgram program pos = head ++ ((newOpcode, value):tail)
+  where
+    (head, ((opcode, value):tail)) = splitAt pos program
+    newOpcode = case opcode of
+                  "jmp" -> "nop"
+                  "nop" -> "jmp"
+                  x     -> x
 
 run :: String -> IO ()
 run fileName = do
   contents <- readFile fileName
   let program = parseInstruction <$> lines contents
-  putStrLn $ "Accumulator at point of infinite loop (Part 1): " ++ (show $ runProgTillInfLoop program)
+  putStrLn $ "Accumulator at point of infinite loop (Part 1): " ++ (show $ snd $ runProg program)
+  let patchedProgram = patchProgram program (findInstCausingLoop program)
+  putStrLn $ "Accumulator at termination of patched program (Part 2): " ++ (show $ snd $ runProg patchedProgram)
 
 main :: IO ()
 main = do
