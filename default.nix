@@ -19,6 +19,7 @@ pkgs.stdenv.mkDerivation {
     ghc -o $out/06CustomCustoms -outputdir $out/tmp/6 06CustomCustoms
     ghc -o $out/07HandyHaversacks -outputdir $out/tmp/7 07HandyHaversacks
     ghc -o $out/08HandheldHalting -outputdir $out/tmp/8 08HandheldHalting
+    ghc -o $out/09EncodingError -outputdir $out/tmp/9 09EncodingError
   '';
 
   installPhase = ''
