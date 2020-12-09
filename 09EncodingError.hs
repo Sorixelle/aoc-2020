@@ -1,3 +1,4 @@
+import Debug.Trace
 import Data.List
 import System.Environment
 
@@ -15,11 +16,24 @@ findInvalid xs
     validNums = sums preamble
     num = head nums
 
+findWeakness :: Int -> [Int] -> Int
+findWeakness invalid xs = loop xs
+  where
+    loop :: [Int] -> Int
+    loop ys
+      | ctSum == invalid = (foldl1 max ys) + (foldl1 min ys)
+      | length ys == 1   = findWeakness invalid $ tail xs
+      | otherwise        = loop $ take (length ys - 1) ys
+      where
+        ctSum = sum ys
+
 run :: String -> IO ()
 run fileName = do
   contents <- readFile fileName
   let ciphertext = read <$> lines contents
-  putStrLn $ "First invalid number (Part 1): " ++ (show $ findInvalid ciphertext)
+  let invalid = findInvalid ciphertext
+  putStrLn $ "First invalid number (Part 1): " ++ (show invalid)
+  putStrLn $ "Encryption weakness (Part 2): " ++ (show $ findWeakness invalid ciphertext)
 
 main :: IO ()
 main = do
