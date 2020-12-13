@@ -22,6 +22,7 @@ pkgs.stdenv.mkDerivation {
     ghc -o $out/09EncodingError -outputdir $out/tmp/9 09EncodingError
     ghc -o $out/10AdapterArray -outputdir $out/tmp/10 10AdapterArray
     ghc -o $out/11SeatingSystem -outputdir $out/tmp/11 11SeatingSystem
+    ghc -o $out/12RainRisk -outputdir $out/tmp/12 12RainRisk
   '';
 
   installPhase = ''
