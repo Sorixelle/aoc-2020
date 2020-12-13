@@ -4,6 +4,6 @@ pkgs.mkShell {
   name = "aoc-2020";
 
   buildInputs = with pkgs; [
-    (haskellPackages.ghcWithPackages (p: [ p.matrix p.parallel ]))
+    (haskellPackages.ghcWithPackages (p: [ p.matrix ]))
   ];
 }
